@@ -1,5 +1,5 @@
 import { type Logger, type LoggerExtras, type LoggerOptions, pino } from "pino";
-import { pinoCaller } from 'pino-caller'
+import { pinoCaller } from "pino-caller";
 
 export class LoggerFactory {
 	static #instance: LoggerFactory | null = null;
@@ -19,12 +19,13 @@ export class LoggerFactory {
 			return this.#logger;
 		}
 
-    try {
-
-			this.#logger = pinoCaller(pino({
-				...config,
-				...options,
-			}));
+		try {
+			this.#logger = pinoCaller(
+				pino({
+					...config,
+					...options,
+				})
+			);
 
 			this.#logger.info(
 				{

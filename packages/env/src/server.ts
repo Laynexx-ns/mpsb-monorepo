@@ -8,15 +8,15 @@ export const env = createEnv({
 		NODE_ENV: z
 			.enum(["development", "production", "test"])
 			.default("development"),
-    REDIS_URL: z.string().min(4),
-    YANDEX_API_TOKEN: z.string().min(10),
-    TELEGRAM_BOT_TOKEN: z.string().min(10),
-    SERVER_PORT: z.coerce.number(),
+		REDIS_URL: z.string().min(4),
+		YANDEX_API_TOKEN: z.string().min(10),
+		TELEGRAM_BOT_TOKEN: z.string().min(10),
+		SERVER_PORT: z.coerce.number(),
 
-    POSTGRES_USER: z.string(),
-    POSTGRES_PASSWORD: z.string(),
-    POSTGRES_DB: z.string(),
-  },
+		POSTGRES_USER: z.string(),
+		POSTGRES_PASSWORD: z.string(),
+		POSTGRES_DB: z.string(),
+	},
 	runtimeEnv: process.env,
 	emptyStringAsUndefined: true,
 });
