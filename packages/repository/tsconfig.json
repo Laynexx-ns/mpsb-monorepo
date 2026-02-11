@@ -1,0 +1,9 @@
+{
+  "extends": "@mpsb-monorepo/config/tsconfig.base.json",
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+  },
+}

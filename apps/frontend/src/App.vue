@@ -88,13 +88,21 @@ onMounted(async () => {
     const payload = await verifyUser();
     tokenPayload.value = payload;
   } catch (e) {
+    if (e instanceof Error && e.message === "401") {
+      toast.add({
+        severity: "error",
+        summary: "Токен истек",
+        detail: "Запросите ссылку от бота еще раз",
+      });
+      return;
+    }
+
     toast.add({
       severity: "error",
-      summary: "Не зарегистрирован",
+      summary: "Требуется авторизация",
       detail:
         "Неоходимо открывать сайт только через бота. Если вы открывали через бота, сообщите об ошибке",
     });
-    console.error(e);
   }
   console.log(tokenPayload.value);
 });
@@ -126,7 +134,6 @@ const handleSendFile = async () => {
       life: 5000,
     });
   } catch (e) {
-    console.error(e);
     toast.add({
       severity: "error",
       summary: "Что-то пошло не так",
@@ -157,7 +164,9 @@ const verifyUser = async (): Promise<JWTPayload> => {
     },
   });
 
-  if (!resp) throw new Error("response body is empty");
+  if (!resp.ok) {
+    throw new Error(resp.status.toString());
+  }
 
   const payload = (await resp.json()).jwtpayload as JWTPayload;
 

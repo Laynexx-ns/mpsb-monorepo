@@ -1,4 +1,5 @@
 import type { StudyGroup, User } from "@mpsb-monorepo/db/generated";
+import { env } from "@mpsb-monorepo/env/server";
 
 export const buildUserFullname = (user: User): string =>
   `${user.last_name} ${user.name} ${user.patronymic}`;
@@ -25,7 +26,7 @@ const BASE_URL = "https://cloud-api.yandex.net/v1/disk/resources";
 export const uploadHomeworkToDisk = async (
   props: UploadHomeworkToDiskProps,
 ) => {
-  const TOKEN = process.env.YANDEX_API_TOKEN;
+  const TOKEN = env.YANDEX_API_TOKEN;
   try {
     await Bun.fetch(`${BASE_URL}?path=${props.groupTitle}`, {
       method: "PUT",

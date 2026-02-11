@@ -9,13 +9,18 @@ type Payload = {
   homeworkName: string;
   groupTitle: string;
   iat: number | undefined;
+  exp: number;
+  userId: bigint;
 };
 
 export const JWTPayloadSchema = z.object({
   userName: z.string(),
   homeworkName: z.string(),
+  homeworkId: z.number(),
   groupTitle: z.string(),
   iat: z.number().nullable(),
+  exp: z.number().nullable(),
+  userId: z.bigint().or(z.string()),
 });
 
 export type JWTPayload = z.infer<typeof JWTPayloadSchema>;
@@ -28,17 +33,18 @@ export function verify(token: string): JWTPayload {
     algorithms: ALGORITHMS,
   });
 
-  if (typeof payload === "string") {
+  if (typeof payload === "string")
     throw new Error("invalid token payload format");
-  }
 
   const parsed = JWTPayloadSchema.safeParse(payload);
+  if (!parsed.success) throw new Error("invalid token payload format");
 
-  if (!parsed.success) {
-    throw new Error("invalid token payload format");
-  }
+  const data = parsed.data;
 
-  return parsed.data;
+  const now = Math.floor(Date.now() / 1000);
+  if (data.exp && data.exp <= now) throw new Error("token expired");
+
+  return data;
 }
 
 export function generate(payload: JWTPayload): string {

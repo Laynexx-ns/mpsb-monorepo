@@ -32,7 +32,9 @@
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.1.10",
     "@mpsb-monorepo/env": "workspace:*",
+    "@mpsb-monorepo/bot": "workspace:*",
     "@mpsb-monorepo/jwt-types": "workspace:*",
+    "@mpsb-monorepo/repository": "workspace:*",
     "@mpsb-monorepo/logger": "workspace:*",
     "@mpsb-monorepo/yandex-api": "workspace:*",
     "dotenv": "catalog:",

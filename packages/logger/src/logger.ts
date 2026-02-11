@@ -19,28 +19,12 @@ export class LoggerFactory {
       return this.#logger;
     }
 
-    try {
-      this.#logger = pinoCaller(
-        pino({
-          ...config,
-          ...options,
-        }),
-      );
-
-      this.#logger.info(
-        {
-          nodeVersion: process.version,
-          pid: process.pid,
-        },
-        "Logger initialized succesfully",
-      );
-    } catch (e) {
-      console.error("Error initializing logger:", e);
-      this.#logger = pino({
-        level: "info",
-        timestamp: true,
-      });
-    }
+    this.#logger = pinoCaller(
+      pino({
+        ...config,
+        ...options,
+      }),
+    );
 
     return this.#logger;
   }

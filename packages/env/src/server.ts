@@ -15,6 +15,8 @@ export const env = createEnv({
 
     BASE_URL: z.string(),
 
+    CORS: z.string(),
+
     JWT_SECRET: z.string().min(20),
 
     POSTGRES_USER: z.string(),
