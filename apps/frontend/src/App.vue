@@ -61,117 +61,121 @@ import { onMounted, ref } from "vue";
 
 const toast = useToast();
 
-const file = ref<Blob | null>(null);
+interface PDFFIle extends Blob {
+  name: string;
+}
+
+const file = ref<PDFFIle | null>(null);
 const tokenPayload = ref<JWTPayload | null>(null);
 const isSending = ref<boolean>(false);
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 function onFileSelect(event: any) {
-	const selected = event.files[0];
-	file.value = selected;
+  const selected = event.files[0];
+  file.value = selected;
 
-	const reader = new FileReader();
+  const reader = new FileReader();
 
-	reader.readAsDataURL(selected);
+  reader.readAsDataURL(selected);
 }
 
 function deleteFile() {
-	file.value = null;
+  file.value = null;
 }
 
 onMounted(async () => {
-	try {
-		const payload = await verifyUser();
-		tokenPayload.value = payload;
-	} catch (e) {
-		if (e instanceof Error && e.message === "401") {
-			toast.add({
-				severity: "error",
-				summary: "Токен истек",
-				detail: "Запросите ссылку от бота еще раз",
-			});
-			return;
-		}
+  try {
+    const payload = await verifyUser();
+    tokenPayload.value = payload;
+  } catch (e) {
+    if (e instanceof Error && e.message === "401") {
+      toast.add({
+        severity: "error",
+        summary: "Токен истек",
+        detail: "Запросите ссылку от бота еще раз",
+      });
+      return;
+    }
 
-		toast.add({
-			severity: "error",
-			summary: "Требуется авторизация",
-			detail:
-				"Неоходимо открывать сайт только через бота. Если вы открывали через бота, сообщите об ошибке",
-		});
-	}
-	console.log(tokenPayload.value);
+    toast.add({
+      severity: "error",
+      summary: "Требуется авторизация",
+      detail:
+        "Неоходимо открывать сайт только через бота. Если вы открывали через бота, сообщите об ошибке",
+    });
+  }
+  console.log(tokenPayload.value);
 });
 
 const handleSendFile = async () => {
-	const token = getToken();
+  const token = getToken();
 
-	if (!file.value) {
-		return;
-	}
-	const formData = new FormData();
-	formData.append("file", file.value);
+  if (!file.value) {
+    return;
+  }
+  const formData = new FormData();
+  formData.append("file", file.value);
 
-	try {
-		isSending.value = true;
-		await fetch(`${BASE_URL}/homework`, {
-			method: "POST",
-			body: formData,
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
+  try {
+    isSending.value = true;
+    await fetch(`${BASE_URL}/homework`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-		toast.add({
-			severity: "success",
-			summary: "Файл успешно загружен",
-			detail:
-				"Домашнее задание уже находится в облаке, но вы все еще можете его изменить в любой момент",
-			life: 5000,
-		});
-	} catch (e) {
-		toast.add({
-			severity: "error",
-			summary: "Что-то пошло не так",
-			detail: "Пожалуйста сообщите об ошибке",
-			life: 5000,
-		});
-	} finally {
-		isSending.value = false;
-	}
+    toast.add({
+      severity: "success",
+      summary: "Файл успешно загружен",
+      detail:
+        "Домашнее задание уже находится в облаке, но вы все еще можете его изменить в любой момент",
+      life: 5000,
+    });
+  } catch (e) {
+    toast.add({
+      severity: "error",
+      summary: "Что-то пошло не так",
+      detail: "Пожалуйста сообщите об ошибке",
+      life: 5000,
+    });
+  } finally {
+    isSending.value = false;
+  }
 };
 
 const getToken = () => {
-	const params = new URLSearchParams(document.location.search);
-	return params.get("token");
+  const params = new URLSearchParams(document.location.search);
+  return params.get("token");
 };
 
 const verifyUser = async (): Promise<JWTPayload> => {
-	const token = getToken();
+  const token = getToken();
 
-	if (!token) {
-		throw new Error("token is empty");
-	}
+  if (!token) {
+    throw new Error("token is empty");
+  }
 
-	const resp = await fetch(`${BASE_URL}/verify`, {
-		method: "GET",
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-	});
+  const resp = await fetch(`${BASE_URL}/verify`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-	if (!resp.ok) {
-		throw new Error(resp.status.toString());
-	}
+  if (!resp.ok) {
+    throw new Error(resp.status.toString());
+  }
 
-	const payload = (await resp.json()).jwtpayload as JWTPayload;
+  const payload = (await resp.json()).jwtpayload as JWTPayload;
 
-	if (resp.status !== 200) throw new Error("request failed");
-	return payload;
+  if (resp.status !== 200) throw new Error("request failed");
+  return payload;
 };
 
 function formatSize(size: number): string {
-	return `${(size / 1024 / 1024).toPrecision(2)} MB`;
+  return `${(size / 1024 / 1024).toPrecision(2)} MB`;
 }
 </script>

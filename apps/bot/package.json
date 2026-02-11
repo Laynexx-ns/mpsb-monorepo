@@ -12,6 +12,7 @@
     "lint": "bunx --bun biome check",
     "lint:fix": "bunx --bun biome format --write ./src",
     "bot": "bun run index",
+    "build": "tsdown index.ts",
     "dev": "bun run index",
     "migrate": "bunx --bun prisma db push"
   },
