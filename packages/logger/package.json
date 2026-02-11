@@ -1,0 +1,13 @@
+{
+  "name": "@mpsb-monorepo/logger",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "pino-caller": "^4.0.0",
+    "pino-noir": "^3.0.0"
+  }
+}

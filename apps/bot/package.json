@@ -1,0 +1,52 @@
+{
+  "name": "@mpsb-monorepo/bot",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "lint": "bunx --bun biome check",
+    "lint:fix": "bunx --bun biome format --write ./src",
+    "bot": "bun run index",
+    "dev": "bun run index",
+    "migrate": "bunx --bun prisma db push"
+  },
+  "exports": {
+    "./bootstrap": {
+      "default": "./src/bootstrap.ts"
+    },
+    ".": {
+      "default": "./src/bot/bot.factory.ts"
+    }
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@biomejs/biome": "^2.3.9",
+    "@gramio/i18n": "^1.4.0",
+    "@gramio/storage-redis": "^1.0.4",
+    "@prisma/adapter-pg": "^7.0.1",
+    "@prisma/client": "^7.0.1",
+    "@types/dateformat": "^5.0.3",
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
+    "@typescript-eslint/parser": "^8.48.1",
+    "dateformat": "^5.0.3",
+    "dotenv": "^17.2.3",
+    "elysia": "^1.4.16",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "gramio": "^0.4.11",
+    "ioredis": "^5.8.2",
+    "pg": "^8.16.3",
+    "pino": "^10.1.0",
+    "pino-pretty": "^13.1.2",
+    "uuid": "^13.0.0",
+    "yaml": "^2.8.1"
+  }
+}

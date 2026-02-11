@@ -1,0 +1,59 @@
+{
+  "name": "mpsb-monorepo",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "dotenv": "^17.2.2",
+      "zod": "^4.1.13",
+      "typescript": "^5",
+      "@types/bun": "^1.3.4"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:native": "turbo -F native dev",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @mpsb-monorepo/db db:push",
+    "db:studio": "turbo -F @mpsb-monorepo/db db:studio",
+    "db:generate": "turbo -F @mpsb-monorepo/db db:generate",
+    "db:migrate": "turbo -F @mpsb-monorepo/db db:migrate",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@bogeychan/elysia-logger": "^0.1.10",
+    "@mpsb-monorepo/env": "workspace:*",
+    "@mpsb-monorepo/bot": "workspace:*",
+    "@mpsb-monorepo/jwt-types": "workspace:*",
+    "@mpsb-monorepo/repository": "workspace:*",
+    "@mpsb-monorepo/logger": "workspace:*",
+    "@mpsb-monorepo/yandex-api": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.13",
+    "@mpsb-monorepo/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "husky": "latest",
+    "lint-staged": "latest",
+    "turbo": "^2.6.3",
+    "typescript": "catalog:",
+    "ultracite": "7.1.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
+      "bun x ultracite fix"
+    ]
+  },
+  "packageManager": "bun@1.2.14"
+}

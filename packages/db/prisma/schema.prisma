@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                  BigInt               @unique
+  username            String?              @unique
+  yandex_email        String
+  verified            Boolean              @default(false)
+  name                String
+  last_name           String
+  patronymic          String
+  overdue_tasks       Int                  @default(0)
+  createdAt           DateTime             @default(now())
+  role                Role                 @default(GUEST)
+  score               Int                  @default(0)
+  studyGroupId        Int
+  request             Request?
+  StudyGroup          StudyGroup           @relation(fields: [studyGroupId], references: [id])
+  userHomeworks       UserHomework[]
+  studyGroupRelations StudyGroupRelation[]
+}
+
+model Request {
+  id        Int      @unique @default(autoincrement())
+  resolved  Boolean
+  canceled  Boolean
+  messageId String[]
+  user_id   BigInt   @unique
+  user      User     @relation(fields: [user_id], references: [id])
+}
+
+model Homework {
+  id            Int            @unique @default(autoincrement())
+  name          String
+  deadline      DateTime?
+  studyGroupId  Int
+  expired       Boolean        @default(false)
+  deleted       Boolean        @default(false)
+  created_at    DateTime       @default(now())
+  studyGroup    StudyGroup     @relation(fields: [studyGroupId], references: [id])
+  userHomeworks UserHomework[]
+}
+
+model UserHomework {
+  id          Int      @id @default(autoincrement())
+  user_id     BigInt
+  homework_id Int
+  deleted     Boolean  @default(false)
+  checked     Boolean  @default(false)
+  score       Int?
+  completedAt DateTime @default(now())
+  homework    Homework @relation(fields: [homework_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, homework_id])
+}
+
+model StudyGroupRelation {
+  id Int @unique @default(autoincrement())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId BigInt
+
+  group   StudyGroup @relation(fields: [groupId], references: [id])
+  groupId Int
+}
+
+model StudyGroup {
+  id                  Int                  @unique @default(autoincrement())
+  grade               Int?
+  letter              String?
+  title               String
+  homework            Homework[]
+  User                User[]
+  studyGroupRelations StudyGroupRelation[]
+}
+
+enum Role {
+  USER
+  ADMIN
+  GUEST
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@mpsb-monorepo/repository",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dto": "./src/dto/*"
+  }
+}
