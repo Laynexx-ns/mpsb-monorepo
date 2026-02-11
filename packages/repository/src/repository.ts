@@ -1,9 +1,9 @@
 import type { PrismaClient } from "@mpsb-monorepo/db/generated";
 
 export abstract class Repository {
-  protected prisma: PrismaClient;
+	protected prisma: PrismaClient;
 
-  constructor(prisma: PrismaClient) {
-    this.prisma = prisma;
-  }
+	constructor(prisma: PrismaClient) {
+		this.prisma = prisma;
+	}
 }

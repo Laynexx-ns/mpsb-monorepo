@@ -1,10 +1,10 @@
-import { bootstrap } from "@/bootstrap";
 import prisma from "@mpsb-monorepo/db";
+import { bootstrap } from "@/bootstrap";
 
 const bot = await bootstrap(prisma);
 
 try {
-  bot.start();
+	bot.start();
 } catch (e) {
-  console.error({ err: e }, "Failed to start bot");
+	console.error({ err: e }, "Failed to start bot");
 }
