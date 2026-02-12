@@ -40,6 +40,6 @@ RUN ls -R apps/bot
 
 
 USER bun
-EXPOSE 3000
+EXPOSE 3002
 
 CMD ["bun", "apps/bot/index.ts"]

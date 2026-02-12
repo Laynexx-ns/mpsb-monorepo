@@ -49,6 +49,6 @@ RUN ls -R apps/server
 
 
 USER bun
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["bun", "apps/server/src/index.ts"]
