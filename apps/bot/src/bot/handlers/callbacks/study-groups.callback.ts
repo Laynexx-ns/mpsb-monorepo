@@ -3,7 +3,7 @@ import type { UserRepository } from "@/repository/user.repository";
 import type { CallbackQueryProps } from "./callback.types";
 
 export interface CallbackQueryUsersRenderProps extends CallbackQueryProps {
-  userRepo: UserRepository;
+	userRepo: UserRepository;
 }
 
 /**
@@ -14,27 +14,27 @@ export interface CallbackQueryUsersRenderProps extends CallbackQueryProps {
  * @param props - Handler props containing the callback context, bot utilities, and a `UserRepository` for retrieving study groups
  */
 export async function CallbackQueryStudyGroups(
-  props: CallbackQueryUsersRenderProps,
+	props: CallbackQueryUsersRenderProps
 ) {
-  const page = props.ctx.queryData.toString().split(":")[1];
-  if (!page) {
-    await props.ctx.send("something went wrong");
-    props.bot.logger.error("can't change page");
-    return;
-  }
+	const page = props.ctx.queryData.toString().split(":")[1];
+	if (!page) {
+		await props.ctx.send("something went wrong");
+		props.bot.logger.error("can't change page");
+		return;
+	}
 
-  try {
-    const groups = await props.userRepo.GetStudyGroups();
+	try {
+		const groups = await props.userRepo.GetStudyGroups();
 
-    const { text, reply_markup } = renderStudyGroupsPage({
-      page: Number.parseInt(page),
-      groups,
-    });
+		const { text, reply_markup } = renderStudyGroupsPage({
+			page: Number.parseInt(page),
+			groups,
+		});
 
-    await props.ctx.editText(text, {
-      reply_markup,
-    });
-  } catch (e) {
-    props.bot.logger.error(e);
-  }
+		await props.ctx.editText(text, {
+			reply_markup,
+		});
+	} catch (e) {
+		props.bot.logger.error(e);
+	}
 }
