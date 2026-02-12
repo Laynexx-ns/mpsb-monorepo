@@ -1,31 +1,35 @@
-# PRISMA
-FROM oven/bun:1 as primsma-gen
+# PREPARE
+FROM oven/bun:1 AS prepare
 
-WORKDIR /usr/src/app
-
-COPY @mpsb-monorepo/db .
-RUN bun install
+RUN bun install -g turbo@^2
 
 
+WORKDIR /app
 
-# FRONTEND SERVER
-FROM oven/bun:1 as frontend
+COPY package.json bun.lock turbo.json ./
+COPY .env ./
 
-WORKDIR /usr/src/app
+COPY packages ./packages
+COPY apps ./apps
 
-COPY package.json bun.lock bunfig.toml ./
-RUN bun install --production
+RUN turbo prune @mpsb-monorepo/frontend --docker
 
+# BUILDER
+FROM oven/bun:1 AS builder
 
-COPY --from=primsma-gen /generated .
+WORKDIR /app
 
-COPY --chown=bun:bun . .
+COPY --from=prepare /app/out/json/ ./
+RUN bun i
 
-RUN mkdir -p /usr/src/app/tmp && chown -R bun:bun /usr/src/app/tmp
-RUN chown -R bun:bun /usr/src/app
+COPY --from=prepare /app/out/full/ ./
 
-USER bun
-EXPOSE 3000
+RUN ls -R apps
 
+# RUNNER
+FROM nginx:alpine
 
-CMD [ "bunx --bun prisma generate && bun index"]
+COPY --from=builder /app/apps/frontend/dist /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,7 +1,6 @@
 FROM oven/bun:1 AS prepare
 
 RUN bun install -g turbo@^2
-RUN bun install -g tsdown
 
 WORKDIR /app
 
