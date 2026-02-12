@@ -1,0 +1,15 @@
+FROM oven/bun:1
+
+WORKDIR /app
+
+
+COPY packages/db/prisma.config.ts ./prisma.config.ts
+COPY packages/db/prisma/schema.prisma ./schema.prisma
+COPY packages/db/prisma/migrations ./prisma/migrations
+
+RUN bun i prisma @types/node @types/pg @prisma/client @prisma/adapter-pg pg dotenv
+
+RUN ls -a
+
+
+CMD ["bunx", "--bun", "prisma", "migrate", "deploy", "--schema", "schema.prisma"]

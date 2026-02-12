@@ -13,8 +13,8 @@ import { AuthMiddleware } from "./auth";
 const LISTEN_PORT = 3000;
 
 const logger = LoggerFactory.instance()
-	.initialize(loggerConfigs.development)
-	.child({});
+  .initialize(loggerConfigs[env.NODE_ENV])
+  .child({});
 
 export type ElysiaLogger = ReturnType<typeof wrap>;
 const elysiaLogger: ElysiaLogger = wrap(logger);
@@ -30,94 +30,94 @@ const homeworkRepository = new HomeworkRepository(prisma);
 
 // This is just a simple almost one-file app, so I think there's no reason to work on it's architecture
 const app = new Elysia()
-	.use(
-		cors({
-			origin: CORS,
-		})
-	)
-	.use(elysiaLogger)
-	.get("/ping", () => "Meow")
-	.use(AuthMiddleware);
+  .use(
+    cors({
+      origin: CORS,
+    }),
+  )
+  .use(elysiaLogger)
+  .get("/ping", () => "Meow")
+  .use(AuthMiddleware);
 
 app.get("/verify", ({ jwtpayload, status, log }) => {
-	log.info({ jwtpayload }, "user verified");
-	status(200, "OK");
-	return {
-		jwtpayload,
-	};
+  log.info({ jwtpayload }, "user verified");
+  status(200, "OK");
+  return {
+    jwtpayload,
+  };
 });
 
 app.post(
-	"/homework",
-	async ({ jwtpayload, body, status, log }) => {
-		const file = body.file;
+  "/homework",
+  async ({ jwtpayload, body, status, log }) => {
+    const file = body.file;
 
-		if (!file) {
-			return status(400, "File is missing");
-		}
+    if (!file) {
+      return status(400, "File is missing");
+    }
 
-		log.info(
-			{
-				name: file.name,
-				size: file.size,
-				type: file.type,
-			},
-			"received file"
-		);
+    log.info(
+      {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      },
+      "received file",
+    );
 
-		try {
-			await yAPI.uploadHomeworkToDisk({
-				file,
-				groupTitle: jwtpayload.groupTitle,
-				userName: jwtpayload.userName,
-				homeworkName: jwtpayload.homeworkName,
-			});
-		} catch (e) {
-			log.error({ err: e }, "failed to upload homework");
-			return status(523, "Yandex origin is unreachable");
-		}
+    try {
+      await yAPI.uploadHomeworkToDisk({
+        file,
+        groupTitle: jwtpayload.groupTitle,
+        userName: jwtpayload.userName,
+        homeworkName: jwtpayload.homeworkName,
+      });
+    } catch (e) {
+      log.error({ err: e }, "failed to upload homework");
+      return status(523, "Yandex origin is unreachable");
+    }
 
-		bot.botInst.api.sendMessage({
-			text: `✅ Файл для ${jwtpayload.groupTitle} успешно отправлен в облако`,
-			chat_id: jwtpayload.userId.toString(),
-		});
+    bot.botInst.api.sendMessage({
+      text: `✅ Файл для ${jwtpayload.groupTitle} успешно отправлен в облако`,
+      chat_id: jwtpayload.userId.toString(),
+    });
 
-		const adminIds = await userRepository.GetAdminIds();
+    const adminIds = await userRepository.GetAdminIds();
 
-		// TODO: add to i18n
-		await bot.notify(
-			adminIds,
-			`*${jwtpayload.userName}* | ${jwtpayload.groupTitle} загрузил домашнее задание для ${jwtpayload.homeworkName}`,
-			{
-				parse_mode: "Markdown",
-			}
-		);
-		log.info(
-			{
-				userId: jwtpayload.userId,
-				homeworkName: jwtpayload.homeworkName,
-				group: jwtpayload.groupTitle,
-			},
-			"sendHomework_done:success"
-		);
+    // TODO: add to i18n
+    await bot.notify(
+      adminIds,
+      `*${jwtpayload.userName}* | ${jwtpayload.groupTitle} загрузил домашнее задание для ${jwtpayload.homeworkName}`,
+      {
+        parse_mode: "Markdown",
+      },
+    );
+    log.info(
+      {
+        userId: jwtpayload.userId,
+        homeworkName: jwtpayload.homeworkName,
+        group: jwtpayload.groupTitle,
+      },
+      "sendHomework_done:success",
+    );
 
-		homeworkRepository.CompleteHomework({
-			userId: jwtpayload.userId,
-			homeworkId: jwtpayload.homeworkId,
-		});
+    homeworkRepository.CompleteHomework({
+      userId: jwtpayload.userId,
+      homeworkId: jwtpayload.homeworkId,
+    });
 
-		return status(200, "OK");
-	},
-	{
-		body: t.Object({
-			file: t.File(),
-		}),
-	}
+    return status(200, "OK");
+  },
+  {
+    body: t.Object({
+      file: t.File(),
+    }),
+  },
 );
 
 app.listen({
-	port: LISTEN_PORT,
-	hostname: "0.0.0.0",
+  port: LISTEN_PORT,
+  hostname: "0.0.0.0",
 });
 
 logger.info(`Server started on port: ${LISTEN_PORT}`);

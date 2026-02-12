@@ -1,0 +1,105 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: "mpsb-postgres"
+    env_file:
+      - .env
+
+    ports:
+      - 5433:5432
+
+    volumes:
+      - /etc/storage/mpsb/postgres:/var/lib/postgresql/data
+
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      timeout: 10s
+      retries: 4
+      interval: 5s
+
+    networks:
+      - mpsb-network
+
+  redis:
+    image: redis:8.4.1-trixie
+    container_name: mpsb-redis
+    ports:
+      - 6380:6379
+    restart: unless-stopped
+    volumes:
+      - /etc/storage/mpsb/postgres:/var/lib/postgresql/data
+    networks:
+      - mpsb-network
+
+  mpsb-bot:
+    build:
+      dockerfile: apps/bot/Dockerfile
+      context: .
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+    container_name: mpsb_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./tmp:/usr/src/app/tmp
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - mpsb-network
+
+  mpsb-server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+    container_name: mpsb-server
+    env_file:
+      - .env
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    networks:
+      - mpsb-network
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - mpsb-network
+
+  # migrate:
+  #   image: oven/bun:1
+  #   working_dir: /app
+  #   volumes:
+  #     - .:/app
+  #   command: bunx --bun prisma migrate deploy --schema packages/db/prisma/schema/schema.prisma
+  #   env_file: .env
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: no
+  #   networks:
+  #     - mpsb-network
+
+networks:
+  mpsb-network:
+    driver: bridge

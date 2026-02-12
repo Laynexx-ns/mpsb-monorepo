@@ -16,7 +16,7 @@ const WORKER_URL = "src/bot/workers/deadline-notifier.worker.ts";
 
 export async function bootstrap(prisma: PrismaClient): Promise<GramioBot> {
   const logger = LoggerFactory.instance().initialize({
-    ...loggerConfigs.development,
+    ...loggerConfigs[env.NODE_ENV],
     serializers: {
       err: pino.stdSerializers.err,
     },
@@ -29,7 +29,10 @@ export async function bootstrap(prisma: PrismaClient): Promise<GramioBot> {
 
     logger.info("Redis connected");
   } catch (e) {
-    logger.fatal({ err: e }, "Redis connection failed");
+    logger.fatal(
+      { err: e, connstring: env.REDIS_URL },
+      "Redis connection failed",
+    );
     process.exit(1);
   }
 
