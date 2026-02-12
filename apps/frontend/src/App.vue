@@ -55,6 +55,10 @@
 </template>
 
 <script setup lang="ts">
+import Button from "primevue/button";
+import Toast from "primevue/toast";
+import FileUpload from "primevue/fileupload";
+import { File, MapArrowRight, TrashBin2, Refresh } from "@solar-icons/vue";
 import type { JWTPayload } from "@mpsb-monorepo/jwt-types";
 import { useToast } from "primevue/usetoast";
 import { onMounted, ref } from "vue";
