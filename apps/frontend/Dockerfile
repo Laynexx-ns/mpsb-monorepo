@@ -7,7 +7,6 @@ RUN bun install -g turbo@^2
 WORKDIR /app
 
 COPY package.json bun.lock turbo.json ./
-COPY .env ./
 
 COPY packages ./packages
 COPY apps ./apps
