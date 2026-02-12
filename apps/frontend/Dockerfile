@@ -23,7 +23,8 @@ RUN bun i
 
 COPY --from=prepare /app/out/full/ ./
 
-RUN ls -R apps
+WORKDIR /app/apps/frontend
+RUN bunx --bun turbo build
 
 # RUNNER
 FROM nginx:alpine

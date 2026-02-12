@@ -3,11 +3,9 @@ FROM oven/bun:1 AS prepare
 
 RUN bun install -g turbo@^2
 
-
 WORKDIR /app
 
 COPY package.json bun.lock turbo.json ./
-
 
 COPY packages ./packages
 COPY apps ./apps
