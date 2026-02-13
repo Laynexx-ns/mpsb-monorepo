@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-col items-center justify-center w-full min-h-screen gap-4"
-  >
+  <div class="flex flex-col items-center pt-[40vh] w-full min-h-screen gap-4">
     <Toast class="max-w-[80vw]" />
     <div v-if="tokenPayload" class="card flex flex-col gap-6">
       <div class="flex flex-col w-full text-left gap-2">
@@ -30,7 +28,7 @@
         >
           <File weight="BoldDuotone" class="shrink-0" />
 
-          <span class="flex-1 min-w-0 wrap-break-words">
+          <span class="flex-1 min-w-0 text-sm wrap-break-words">
             {{ file.name }}
           </span>
 
