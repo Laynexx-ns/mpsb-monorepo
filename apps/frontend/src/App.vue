@@ -73,7 +73,8 @@ const file = ref<PDFFIle | null>(null);
 const tokenPayload = ref<JWTPayload | null>(null);
 const isSending = ref<boolean>(false);
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL: string = import.meta.env.VITE_BASE_URL;
+const TOAST_TIME: number = 5000;
 
 function onFileSelect(event: any) {
   const selected = event.files[0];
@@ -94,11 +95,7 @@ onMounted(async () => {
     tokenPayload.value = payload;
   } catch (e) {
     if (e instanceof Error && e.message === "401") {
-      toast.add({
-        severity: "error",
-        summary: "Токен истек",
-        detail: "Запросите ссылку от бота еще раз",
-      });
+      tokenExpired();
       return;
     }
 
@@ -123,7 +120,7 @@ const handleSendFile = async () => {
 
   try {
     isSending.value = true;
-    await fetch(`${BASE_URL}/homework`, {
+    const resp = await fetch(`${BASE_URL}/homework`, {
       method: "POST",
       body: formData,
       headers: {
@@ -131,24 +128,45 @@ const handleSendFile = async () => {
       },
     });
 
+    if (!resp.ok) {
+      if (resp.status == 401) {
+        tokenExpired();
+      } else {
+        toast.add({
+          severity: "error",
+          summary: "Что-то пошло не так",
+          detail: "Пожалуйста сообщите об ошибке",
+          life: TOAST_TIME,
+        });
+      }
+    }
+
     toast.add({
       severity: "success",
       summary: "Файл успешно загружен",
       detail:
         "Домашнее задание уже находится в облаке, но вы все еще можете его изменить в любой момент",
-      life: 5000,
+      life: TOAST_TIME,
     });
   } catch (e) {
     toast.add({
       severity: "error",
-      summary: "Что-то пошло не так",
-      detail: "Пожалуйста сообщите об ошибке",
-      life: 5000,
+      summary: "Ошибка сети",
+      detail: "Пожалуйста проверьте соединение и попробуйте снова",
+      life: TOAST_TIME,
     });
   } finally {
     isSending.value = false;
   }
 };
+
+function tokenExpired() {
+  toast.add({
+    severity: "error",
+    summary: "Токен истек",
+    detail: "Запросите ссылку от бота еще раз",
+  });
+}
 
 const getToken = () => {
   const params = new URLSearchParams(document.location.search);
