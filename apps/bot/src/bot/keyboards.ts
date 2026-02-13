@@ -33,6 +33,7 @@ export const KEYBOARD_COMMANDS = {
   update: "🔄 Заменить",
   delete: "🗑️ Удалить",
   reject: "🚫 Отклонить",
+  profile: "👤 Профиль",
   back: "← Назад",
 } as const;
 
@@ -50,6 +51,7 @@ export const KEYBOARD_LAYOUTS = {
 
   student: [
     [{ text: KEYBOARD_COMMANDS.homework }],
+    [{ text: KEYBOARD_COMMANDS.profile }],
     // [{ text: KEYBOARD_COMMANDS.info }, { text: KEYBOARD_COMMANDS.lections }],
   ],
   guest: [[{ text: KEYBOARD_COMMANDS.resendRequest }]],

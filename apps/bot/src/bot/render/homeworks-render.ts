@@ -14,48 +14,48 @@ import { RENDER_CALLBACKS } from "./render.types";
  * @returns An object with `text` (header) and `reply_markup` containing the assembled `inline_keyboard` and pagination controls.
  */
 export function renderHomeworksPage(
-	homeworks: UserHomeworkDTO[],
-	page: number,
-	pageSize = 5
+  homeworks: UserHomeworkDTO[],
+  page: number,
+  pageSize = 5,
 ) {
-	const totalPages = Math.max(1, Math.ceil(homeworks.length / pageSize));
-	const safePage = Math.min(page, totalPages - 1);
+  const totalPages = Math.max(1, Math.ceil(homeworks.length / pageSize));
+  const safePage = Math.min(page, totalPages - 1);
 
-	homeworks.reverse();
-	const start = safePage * pageSize;
-	const end = start + pageSize;
-	const slice = homeworks.slice(start, end);
+  homeworks.reverse();
+  const start = safePage * pageSize;
+  const end = start + pageSize;
+  const slice = homeworks.slice(start, end);
 
-	// TODO: add 18n
-	const text = "📚 Домашние задания | Нажмите на дз чтобы отправить";
-	const pageText = `📄 ${safePage + 1}/${totalPages}`;
+  // TODO: add 18n
+  const text = "📚 Домашние задания  | Нажмите на дз чтобы отправить";
+  const pageText = `📄 ${safePage + 1}/${totalPages}`;
 
-	const keyboard: any = { inline_keyboard: [] };
+  const keyboard: any = { inline_keyboard: [] };
 
-	for (const hw of slice) {
-		const label = `${hw.name}${hw.completed ? " | ✅" : ""}${
-			hw.deadline ? " | " + dateFormat(hw.deadline, "yyyy-mm-dd HH:MM") : ""
-		}`;
+  for (const hw of slice) {
+    const label = `${hw.name}${hw.completed ? " | ✅" : ""}${
+      hw.deadline ? " | " + dateFormat(hw.deadline, "yyyy-mm-dd HH:MM") : ""
+    }`;
 
-		keyboard.inline_keyboard.push([
-			{
-				text: `${hw.deleted ? "🗑️" : ""} ${label}`,
-				callback_data: RENDER_CALLBACKS.homeworksRender.openHomework.call(
-					hw.id,
-					safePage
-				),
-			},
-		]);
-	}
+    keyboard.inline_keyboard.push([
+      {
+        text: `${hw.deleted ? "🗑️" : ""} ${label}`,
+        callback_data: RENDER_CALLBACKS.homeworksRender.openHomework.call(
+          hw.id,
+          safePage,
+        ),
+      },
+    ]);
+  }
 
-	keyboard.inline_keyboard.push(
-		GetPagesControl({
-			callbackName: RENDER_CALLBACKS.homeworksRender.updatePage.name,
-			pageText,
-			safePage,
-			totalPages,
-		})
-	);
+  keyboard.inline_keyboard.push(
+    GetPagesControl({
+      callbackName: RENDER_CALLBACKS.homeworksRender.updatePage.name,
+      pageText,
+      safePage,
+      totalPages,
+    }),
+  );
 
-	return { text, reply_markup: keyboard };
+  return { text, reply_markup: keyboard };
 }
