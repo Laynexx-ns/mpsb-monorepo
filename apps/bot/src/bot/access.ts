@@ -1,20 +1,19 @@
 import type { Keyboard } from "gramio";
-import type { User } from "@/prisma/client";
-import type { Role } from "@/prisma/enums";
+import type { User, Role } from "@mpsb-monorepo/db/generated";
 import type { GramioBot } from "./bot.factory";
 import { extractUserId } from "./helpers/extract-user-id";
 import { getRelativeKeyboard } from "./helpers/get-relative-kbd";
 import type { GramioMessageContext } from "./types/bot.types";
 
 export interface AccessContext {
-	user: User | null;
-	role: Role;
-	keyboard: Keyboard;
+  user: User | null;
+  role: Role;
+  keyboard: Keyboard;
 }
 
 export interface AccessMiddlewareProps {
-	ctx: GramioMessageContext;
-	bot: GramioBot;
+  ctx: GramioMessageContext;
+  bot: GramioBot;
 }
 
 /**
@@ -24,22 +23,22 @@ export interface AccessMiddlewareProps {
  * @returns An AccessContext with the resolved `user`, the associated `role`, and the keyboard for that role; when no user is found `user` is `null` and `role` is `"GUEST"`
  */
 async function accessMiddleware(
-	props: AccessMiddlewareProps
+  props: AccessMiddlewareProps,
 ): Promise<AccessContext> {
-	const userId = extractUserId(props.ctx);
-	const user = await props.bot.getUser(userId);
+  const userId = extractUserId(props.ctx);
+  const user = await props.bot.getUser(userId);
 
-	if (!user) {
-		return {
-			user: null,
-			role: "GUEST",
-			keyboard: getRelativeKeyboard("GUEST"),
-		};
-	}
+  if (!user) {
+    return {
+      user: null,
+      role: "GUEST",
+      keyboard: getRelativeKeyboard("GUEST"),
+    };
+  }
 
-	return {
-		user,
-		role: user.role,
-		keyboard: getRelativeKeyboard(user.role),
-	};
+  return {
+    user,
+    role: user.role,
+    keyboard: getRelativeKeyboard(user.role),
+  };
 }

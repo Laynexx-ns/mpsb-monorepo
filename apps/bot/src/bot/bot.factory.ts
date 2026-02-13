@@ -954,6 +954,9 @@ export class GramioBot extends TelegramBot {
                 userRepo: this.userRepository,
                 homeworkRepo: this.homeworkRepository,
               });
+
+
+              getRelativeKeyboard(ctx.access.role);
               return;
             }
             case KEYBOARD_COMMANDS.students: {
@@ -1009,7 +1012,7 @@ export class GramioBot extends TelegramBot {
 
                 const formattedUserGroups = userGroups
                   .map((g) => g.title)
-                  .join(" ");
+                  .join(", ");
                 await ctx.send(
                   `${buildUserFullname(user)}\n` +
                     `Ваши группы: ${formattedUserGroups}`,
