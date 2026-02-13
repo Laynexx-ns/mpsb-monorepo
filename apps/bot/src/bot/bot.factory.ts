@@ -285,9 +285,12 @@ export class GramioBot extends TelegramBot {
     for (const id of who) {
       try {
         this.logger.debug({ chatId: id.toString(), text }, "notify:sending");
+        const kbd = this.GetKeyboard(id);
+
         const msg = await this.bot.api.sendMessage({
           chat_id: id.toString(),
           text,
+          reply_markup: kbd,
           ...data,
         });
 
@@ -955,8 +958,6 @@ export class GramioBot extends TelegramBot {
                 homeworkRepo: this.homeworkRepository,
               });
 
-
-              getRelativeKeyboard(ctx.access.role);
               return;
             }
             case KEYBOARD_COMMANDS.students: {

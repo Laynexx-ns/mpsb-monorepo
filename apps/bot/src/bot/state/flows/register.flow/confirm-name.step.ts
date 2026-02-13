@@ -16,7 +16,7 @@ export const registerConfirmName = () => {
 			return null;
 		}
 
-		await ctx.send("Введите вашу яндекс почту: ", {
+		await ctx.send("Введите вашу почту: ", {
 			reply_markup: { remove_keyboard: true },
 		});
 		return "enterEmail";
