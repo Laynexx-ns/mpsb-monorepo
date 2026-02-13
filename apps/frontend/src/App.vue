@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center w-full min-h-screen p-4 gap-4"
+    class="flex flex-col items-center justify-center w-full min-h-screen gap-4"
   >
     <Toast class="max-w-[80vw]" />
     <div v-if="tokenPayload" class="card flex flex-col gap-6">
