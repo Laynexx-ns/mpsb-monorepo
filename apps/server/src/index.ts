@@ -78,7 +78,7 @@ app.post(
     }
 
     bot.botInst.api.sendMessage({
-      text: `✅ Файл для ${jwtpayload.groupTitle} успешно отправлен в облако`,
+      text: `✅ Файл для ${jwtpayload.homeworkName} успешно отправлен в облако`,
       chat_id: jwtpayload.userId.toString(),
     });
 

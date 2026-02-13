@@ -1,9 +1,11 @@
 <template>
-  <div class="pt-[40vh] h-full flex flex-col items-center">
+  <div
+    class="flex flex-col items-center justify-center w-full min-h-screen p-4 gap-4"
+  >
     <Toast class="max-w-[80vw]" />
     <div v-if="tokenPayload" class="card flex flex-col gap-6">
       <div class="flex flex-col w-full text-left gap-2">
-        <h3 class="text-2xl">
+        <h3 class="text-xl md:text-2xl">
           Загрузите домашку в PDF файле для
           <b>{{ tokenPayload.homeworkName }}</b>
         </h3>
@@ -22,17 +24,25 @@
         class="p-button-outlined"
       />
 
-      <div v-if="file" class="flex max-w-[88vw] flex-col gap-4">
+      <div v-if="file" class="flex flex-col w-full max-w-[90vw] gap-4">
         <div
-          class="flex items-center border border-gray-700 p-4 gap-4 justify-between rounded-3xl"
+          class="flex flex-wrap items-center justify-between gap-2 border border-gray-700 p-4 rounded-3xl w-full"
         >
-          <File weight="BoldDuotone" />
-          <span class="truncate flex-1">{{ file.name }}</span>
-          <span>{{ formatSize(file.size) }}</span>
+          <File weight="BoldDuotone" class="shrink-0" />
+
+          <span class="flex-1 min-w-0 wrap-break-words">
+            {{ file.name }}
+          </span>
+
+          <span class="shrink-0 whitespace-nowrap">
+            {{ formatSize(file.size) }}
+          </span>
+
           <Button
             @click="deleteFile"
             severity="danger"
             :disabled="isSending || file == null"
+            class="shrink-0"
           >
             <TrashBin2 weight="BoldDuotone" />
           </Button>
@@ -42,12 +52,12 @@
           :disabled="isSending"
           @click="handleSendFile"
           rounded
-          class="rounded-3xl"
+          class="rounded-3xl w-full md:w-auto"
         >
-          <div v-if="!isSending" class="flex gap-2">
+          <div v-if="!isSending" class="flex justify-center gap-2">
             <MapArrowRight weight="BoldDuotone" /> <b>Отправить</b>
           </div>
-          <Refresh v-else class="animate-spin" weight="BoldDuotone" />
+          <Refresh v-else class="animate-spin mx-auto" weight="BoldDuotone" />
         </Button>
       </div>
     </div>
@@ -106,7 +116,6 @@ onMounted(async () => {
         "Неоходимо открывать сайт только через бота. Если вы открывали через бота, сообщите об ошибке",
     });
   }
-  console.log(tokenPayload.value);
 });
 
 const handleSendFile = async () => {
