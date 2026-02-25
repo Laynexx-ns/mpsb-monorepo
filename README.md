@@ -9,7 +9,7 @@ There's three typescript services:
 - backend on **Elysia**
 - frontend on **Vue**
 
-Also, there's two data source, that defined in docker compose file:
+Also, there are two data sources, that defined in docker compose file:
 
 - PostgreSQL (main datasource)
 - Redis - Redis (cache, used by bot service)
