@@ -1,6 +1,18 @@
 # mpsb-monorepo
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Elysia, and more.
+This is a simple bot for 1580 school.
+It saves students' homeworks and sends them to yandex disk
+
+There's three typescript services:
+
+- bot on **Gramio**
+- backend on **Elysia**
+- frontend on **Vue**
+
+Also, there's two data source, that defined in docker compose file:
+
+- PostgreSQL (main datasource)
+- Redis - Redis (cache, used by bot service)
 
 ## Features
 
@@ -15,47 +27,39 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 ## Getting Started
 
-First, install the dependencies:
+Installing dependencies
 
 ```bash
-bun install
+bun i
 ```
 
-## Database Setup
-
-This project uses PostgreSQL with Prisma.
-
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
-
-3. Apply the schema to your database:
+create env file
 
 ```bash
-bun run db:push
+touch .env
 ```
 
-Then, run the development server:
+and then configure it using `.env.example` file
+
+Run databases for local development
 
 ```bash
-bun run dev
+docker compose -f docker-compose.local.ymlm up -d
+```
+
+Run all services using turborepo
+
+```bash
+turbo dev
 ```
 
 The API is running at [http://localhost:3000](http://localhost:3000).
+Frontend is running at [http://localhost:5173](http://localhost:5173).
 
 ## Git Hooks and Formatting
 
 - Initialize hooks: `bun run prepare`
 - Format and lint fix: `bun run check`
-
-## Project Structure
-
-```
-mpsb-monorepo/
-├── apps/
-│   └── server/      # Backend API (Elysia)
-├── packages/
-│   └── db/          # Database schema & queries
-```
 
 ## Available Scripts
 
