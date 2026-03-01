@@ -12,8 +12,6 @@
         >
       </div>
 
-
-
       <FileUpload
         v-if="!file"
         mode="basic"
@@ -94,7 +92,6 @@ function onFileSelect(event: any) {
 
   reader.readAsDataURL(selected);
 }
-cofunction
 
 function deleteFile() {
   file.value = null;
