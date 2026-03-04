@@ -3,7 +3,7 @@
 This is a simple bot for 1580 school.
 It saves students' homeworks and sends them to yandex disk
 
-There's three typescript services:
+There are three typescript services:
 
 - bot on **Gramio**
 - backend on **Elysia**
@@ -12,7 +12,7 @@ There's three typescript services:
 Also, there are two data sources, that defined in docker compose file:
 
 - PostgreSQL (main datasource)
-- Redis - Redis (cache, used by bot service)
+- Redis (cache, used by bot service)
 
 ## Features
 
